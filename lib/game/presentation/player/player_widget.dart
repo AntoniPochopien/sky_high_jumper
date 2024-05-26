@@ -58,7 +58,7 @@ class _PlayerWidgetState extends State<PlayerWidget>
     final size = MediaQuery.sizeOf(context);
     final screenWidth = size.width;
     final screenHeight = size.height;
-    double startX = 75;
+    const double startX = 75;
     final double endX = screenWidth - 100;
     final double peakY = screenHeight / 1.3;
     final double endY =  screenHeight - groundHeight - playerSize.width;
