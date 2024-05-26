@@ -4,7 +4,7 @@ class GameConfig {
   final Size platformSize;
   final double groundHeight;
   final Size playerSize;
-  final int animationDuration;
+  final Duration animationDuration;
 
   const GameConfig(
       {required this.groundHeight,

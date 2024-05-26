@@ -26,7 +26,7 @@ class GameCubit extends Cubit<GameState> {
     if (state.platforms[length-2].platformDirection == tapDirection) {
       final newPlatforms = _generatePlatforms(1);
       platforms.insertAll(0,newPlatforms);
-      emit(state.copyWith(platforms: platforms..removeLast()));
+      emit(state.copyWith(platforms: platforms..removeLast(), score: state.score+1));
     }
   }
 

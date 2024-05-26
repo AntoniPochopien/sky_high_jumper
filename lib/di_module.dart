@@ -11,6 +11,6 @@ void diInit() {
       groundHeight: 100,
       platformSize: Size(200, 35),
       playerSize: Size(32, 32),
-      animationDuration: 400
+      animationDuration: Duration(milliseconds: 400)
       ));
 }
