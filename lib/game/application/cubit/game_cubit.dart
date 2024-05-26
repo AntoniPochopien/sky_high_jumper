@@ -16,6 +16,15 @@ class GameCubit extends Cubit<GameState> {
     emit(state.copyWith(platforms: platforms));
   }
 
+  void tap(Direction tapDirection) {
+    final platforms = List<GamePlatform>.from(state.platforms);
+    if (state.platforms.last.platformDirection == tapDirection) {
+      final newPlatforms = _generatePlatforms(1);
+      platforms.insertAll(0,newPlatforms);
+      emit(state.copyWith(platforms: platforms..removeLast()));
+    }
+  }
+
   List<GamePlatform> _generatePlatforms(int length) {
     final p = <GamePlatform>[];
     for (int i = 0; i < length; i++) {

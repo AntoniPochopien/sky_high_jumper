@@ -15,20 +15,20 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   bool afterFirstTap = false;
 
-  Widget _tapHitBox(Direction tapDirection) => Expanded(
-      child: GestureDetector(
-          onTap: () {
-            if (afterFirstTap) {
-              print(tapDirection);
-            } else {
-              setState(() {
-                afterFirstTap = true;
-              });
-            }
-          },
-          child: Container(
-            color: Colors.transparent,
-          )));
+  Widget _tapHitBox(BuildContext ctx, {required Direction tapDirection}) =>
+      Expanded(
+          child: GestureDetector(
+              onTap: () {
+                if (!afterFirstTap) {
+                  setState(() {
+                    afterFirstTap = true;
+                  });
+                }
+                ctx.read<GameCubit>().tap(tapDirection);
+              },
+              child: Container(
+                color: Colors.transparent,
+              )));
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +77,8 @@ class _GameScreenState extends State<GameScreen> {
             Positioned.fill(
               child: Row(
                 children: [
-                  _tapHitBox(Direction.left),
-                  _tapHitBox(Direction.right)
+                  _tapHitBox(context, tapDirection: Direction.left),
+                  _tapHitBox(context, tapDirection: Direction.right)
                 ],
               ),
             )
