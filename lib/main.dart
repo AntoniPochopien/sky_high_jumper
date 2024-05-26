@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sky_high_jumper/di_module.dart';
 import 'package:sky_high_jumper/l10n/l10n.dart';
 import 'package:sky_high_jumper/navigation/app_router.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   diInit();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(const SkyHighJumper());
 }
 

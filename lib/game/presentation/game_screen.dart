@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sky_high_jumper/di_module.dart';
 import 'package:sky_high_jumper/game/application/cubit/game_cubit.dart';
 import 'package:sky_high_jumper/game/domain/direction.dart';
+import 'package:sky_high_jumper/game/domain/game_config.dart';
 
 @RoutePage()
 class GameScreen extends StatefulWidget {
@@ -32,7 +34,12 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final size = MediaQuery.sizeOf(context);
+    final size = MediaQuery.sizeOf(context);
+    final gameConfig = getIt<GameConfig>();
+    final groundHeight = gameConfig.groundHeight;
+    final platformSize = gameConfig.platformSize;
+    final playerSize = gameConfig.playerSize;
+    final animationDuration = gameConfig.animationDuration;
     return BlocProvider(
       create: (context) => GameCubit()..init(),
       child: BlocBuilder<GameCubit, GameState>(
@@ -45,33 +52,53 @@ class _GameScreenState extends State<GameScreen> {
               children: [
                 Expanded(
                   child: Stack(alignment: Alignment.bottomCenter, children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ...state.platforms.map(
-                          (e) => Row(
-                            mainAxisAlignment:
-                                e.platformDirection == Direction.left
-                                    ? MainAxisAlignment.start
-                                    : MainAxisAlignment.end,
-                            children: [e],
-                          ),
-                        )
-                      ],
-                    ),
                     Container(
-                      width: 32,
-                      height: 32,
+                      width: playerSize.width,
+                      height: playerSize.height,
                       color: Colors.yellow,
                     ),
                   ]),
                 ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 400),
-                  width: double.infinity,
-                  height: afterFirstTap ? 0 : 100,
-                  color: Colors.green,
-                )
+                AnimatedSwitcher(
+                    duration:  Duration(milliseconds: animationDuration),
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0, 1), // Start above the screen
+                          end: Offset.zero, // End at the child's position
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                    child: afterFirstTap
+                        ? Container(
+                            key: const ValueKey(0),
+                            height: groundHeight,
+                          )
+                        : Container(
+                            key: const ValueKey(1),
+                            height: groundHeight,
+                            width: double.infinity,
+                            color: Colors.green,
+                          ))
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ...state.platforms.map(
+                  (e) => Padding(
+                    padding:  EdgeInsets.only(top: size.height/9),
+                    child: Row(
+                      mainAxisAlignment: e.platformDirection == Direction.left
+                          ? MainAxisAlignment.start
+                          : MainAxisAlignment.end,
+                      children: [e],
+                    ),
+                  ),
+                ),
+                SizedBox(height: groundHeight-platformSize.height)
               ],
             ),
             Positioned.fill(
